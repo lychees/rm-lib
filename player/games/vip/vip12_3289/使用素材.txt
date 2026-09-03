@@ -1,0 +1,13 @@
+使用素材
+
+ザ・マッチメイカァズ2nd
+	http://osabisi.sakura.ne.jp/m2/
+・Sound
+tm2_quiz001good.wav
+tm2_metalhit000.wav
+tm_swing06_h.wav
+tm_wood00.wav
+
+VIPRPG素材保管@Wiki
+	https://w.atwiki.jp/viprpg_sozai/
+

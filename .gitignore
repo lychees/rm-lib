@@ -1,0 +1,5 @@
+# 不跟踪本地产物
+cache_state.json
+*.log
+__pycache__/
+.DS_Store

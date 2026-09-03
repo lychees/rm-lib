@@ -1,0 +1,88 @@
+@> Display Text Options: Normal, Bottom, Fixed, Stop Event Movement
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Brian!!Taihen nanda yo!!
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: Sugoku Katakoto desune Alex san
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: KaigaiEga kousiki de
+ :         : RPG tkool 2003 wo uridasitanda!!
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: Kaigai dakara \c[2]RPG maker 2003\c[0] na
+@> Show Picture: 1000, 'WS000017qrq', (160,120), 100%, 0%
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Iroiro UI ga miyasuku nattandayo!!
+@> Show Picture: 1000, 'WS000018fqr', (160,120), 100%, 0%
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: nn? kizon no version ja nainoka?
+@> Show Picture: 1000, 'WS000019rq', (160,120), 100%, 0%
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Sou, version ha nanto \c[2]1.10\c[0]!!
+ :         : Nihon no saisyuu ver ha \c[2]1.09\c[0]da
+@> Erase Picture: 1000
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: Kaigai ni 1dan tobasi saretanoka
+ :         : (hikousiki 2003 no saisyuu ver 1.08)
+@> Show Picture: 1000, 'WS000023qr', (160,120), 100%, 0%
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Naniyori yabai no ga kore
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: Jijitu dato sitemo tukaikirene-yo
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: 1000mai tukae toha daremo ittenai
+ :         : ittenaiga, korede hyougen no haba ha 
+ :         : ookiku hirogarunda
+@> Erase Picture: 1000
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: demo, iitoko barakari ja naindesyo?
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Nihongo ga mojibake suru
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: timeitekidana
+ :         : (ma- kaigai muke dasina)
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Kaigai RTP sika tukaenai
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: timeitekidana
+ :         : (ma- kaigai muke dasina)
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Sono RTP wo DL dekinai
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: timeitekidana
+ :         : (ma- kaigai dasina)
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: exe no youryou ga huete
+ :         : sarani hituyou na file ga 2tu tuika
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: exe nuki dekinakunarunoka
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: dousitemo picture 1000 tukaitai tte
+ :         : hitoto
+ :         : 2003 kyousinja muke tooldesu
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: Joujin niha osusume dekinai tool dane
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: sonna sugoi hentaimuke tool ga
+ :         : imanara kaigai kousiki de
+ :         : \c[2]$19.99\c[0]!!
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: daitai 2400en kurai dana
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: sikamoimanara
+ :         : steam de 2003 ga 5/1 made $16.99!!
+@> Control Variables: [0001] = 120 
+@> Control Variables: [0001] *= 17 
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: daitai \v[1]en kurai dana
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: nihon no kousikisan
+ :         : nihongo ban de hontoni dasitekudsai
+@> Scroll Map: Up, 5, 6
+@> Scroll Map: Left, 5, 6, Wait
+@> Change Faceset: 'Ac1', 13, Left, No Flip
+@> Text: Semete sinkinou tukaeya Oraaaa
+@> Change Faceset: 'Ac1', 1, Left, No Flip
+@> Text: Mudani Picture No 1000de
+ :         : hyouji sitemasitaaaaaaaaohoooooo
+@> Change Faceset: 'Ac1', 3, Left, Flip
+@> Text: Wa-
+@> Return to Title Screen

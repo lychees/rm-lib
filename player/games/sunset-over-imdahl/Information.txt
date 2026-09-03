@@ -1,0 +1,26 @@
+--SUNSET OVER IMDAHL--
+
+By: Teo Mathlein (H3Who) - www.h3who.com
+made during 2003-04.
+- - -
+
+If anyone would like to host this game on their own site, go right ahead.
+Just don't change any files or change/remove this Information.txt.
+
+If anyone would like to use any of the scripts or graphics from this game,
+go right ahead with that as well. I believe that the resources used in game
+making should always be open to other creators, so that people can
+benefit from each others work. Only that way, the collective graphical
+standard can continue to go up. In my opinion, people who go into great
+effort to lock up their games are doing a horrible thing.
+
+Some credit is always nice though, but that's up to you.
+- - -
+
+Thanks to:
+
+Ramirez and Andiaz - Beta testers
+Anomy, for making RMRecker(dl at: rpginfinity.com)
+Comet Studios(?), for making RM-Tool(dl at: www.whoopanetwork.com)
+And whatever people made the Ct-rips that I have edited to use in my game.
+- - -

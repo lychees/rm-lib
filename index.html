@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RM2k/2k3 游戏库</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Microsoft YaHei", system-ui, sans-serif; background: #14161a; color: #d8dce2; }
+  header { padding: 12px 18px 0; background: #1d2128; border-bottom: 1px solid #2c313a; position: sticky; top: 0; z-index: 5; }
+  .bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding-bottom: 10px; }
+  header h1 { font-size: 17px; margin: 0 12px 0 0; white-space: nowrap; }
+  input, select, button { background: #14161a; color: #d8dce2; border: 1px solid #3a414c; border-radius: 6px; padding: 6px 10px; font-size: 14px; }
+  input#q { width: 220px; }
+  button { cursor: pointer; }
+  button:hover { background: #242a33; }
+  #stats { margin-left: auto; font-size: 13px; color: #8b93a0; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 6px; padding-bottom: 10px; }
+  .tabs button { border-radius: 16px; padding: 5px 14px; font-size: 13px; }
+  .tabs button.on { background: #2b6cb0; border-color: #2b6cb0; color: #fff; }
+  .tabs button .n { opacity: .65; font-size: 11px; margin-left: 4px; }
+  #genbar { display: none; padding-bottom: 10px; gap: 6px; flex-wrap: wrap; }
+  #genbar.show { display: flex; }
+  #genbar button { font-size: 12px; padding: 3px 10px; }
+  #genbar button.on { background: #4a5568; border-color: #4a5568; color: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { padding: 7px 10px; border-bottom: 1px solid #23272e; text-align: left; }
+  th { background: #1d2128; position: sticky; top: 118px; cursor: pointer; user-select: none; white-space: nowrap; }
+  tr:hover td { background: #1b1f26; }
+  td.title { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .src { color: #7fb3e0; white-space: nowrap; }
+  .eng { color: #a8c98f; white-space: nowrap; }
+  .play { background: #2b6cb0; border: 0; color: #fff; padding: 4px 14px; border-radius: 6px; }
+  .play:hover { background: #3182ce; }
+  .dl { background: #2f5d3a; border: 0; color: #fff; padding: 4px 14px; border-radius: 6px; text-decoration: none; font-size: 13px; }
+  .dl:hover { background: #3a7a4a; }
+  .na { color: #4a5568; font-size: 12px; }
+  #pager { padding: 12px 18px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  #pager button:disabled { opacity: .35; cursor: default; }
+  #loading { padding: 40px; text-align: center; color: #8b93a0; }
+  .note { font-size: 12px; color: #8b93a0; padding: 0 18px 10px; }
+  .badge { font-size: 11px; background: #2f5d3a; color: #fff; border-radius: 4px; padding: 1px 6px; margin-left: 6px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>🎮 RM2k/2k3 游戏库</h1>
+    <input id="q" placeholder="搜索标题…" autofocus>
+    <select id="feng">
+      <option value="">全部引擎</option>
+      <option value="RM2k">RM2000</option>
+      <option value="RM2k3">RM2003</option>
+    </select>
+    <select id="fplay">
+      <option value="">全部</option>
+      <option value="local">网页可玩</option>
+      <option value="url">可下载</option>
+    </select>
+    <span id="stats">加载中…</span>
+  </div>
+  <div class="tabs" id="cats"></div>
+  <div id="genbar"></div>
+</header>
+<table>
+  <thead><tr>
+    <th data-k="title">标题</th><th data-k="source">来源</th>
+    <th data-k="engine">引擎</th><th data-k="year">年份</th><th data-k="size">大小</th><th></th>
+  </tr></thead>
+  <tbody id="tb"></tbody>
+</table>
+<div id="loading">正在加载游戏目录…</div>
+<div id="pager"></div>
+<div class="note">"▶ 运行" 的游戏可直接在浏览器中游玩（EasyRPG Player Web）；其余条目附原始下载链接。本页由 GitHub Pages 托管。</div>
+<script>
+let games = [], view = [], page = 0, per = 100, sortK = 'title', sortD = 1;
+let curCat = '', curGen = '';
+const $ = s => document.querySelector(s);
+const esc = s => (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const CATS = [
+  {id: '', name: '全部'},
+  {id: 'classic', name: '经典', match: s => s === '经典'},
+  {id: 'vip', name: 'VIPRPG', match: s => /^vip\d+$/.test(s), gens: true},
+  {id: 'en', name: '英语圈', match: s => ['rpgmakerarchive','RMN','itch.io'].includes(s)},
+  {id: 'de', name: '德语圈', match: s => s === 'rmarchiv.de'},
+  {id: 'jp', name: '日本门户', match: s => s === 'freem.ne.jp'},
+  {id: 'cn', name: '中文圈', match: s => s === '中文'},
+];
+
+async function boot() {
+  const r = await fetch('games.json');
+  games = await r.json();
+  const catsEl = $('#cats');
+  for (const c of CATS) {
+    const n = c.match ? games.filter(g => c.match(g.source)).length : games.length;
+    const b = document.createElement('button');
+    b.dataset.cat = c.id;
+    b.innerHTML = esc(c.name) + `<span class="n">${n}</span>`;
+    b.onclick = () => setCat(c.id);
+    catsEl.appendChild(b);
+  }
+  const genEl = $('#genbar');
+  const allb = document.createElement('button');
+  allb.textContent = '全部代目';
+  allb.onclick = () => setGen('');
+  genEl.appendChild(allb);
+  for (let i = 1; i <= 14; i++) {
+    const b = document.createElement('button');
+    b.textContent = i + '代目';
+    b.dataset.gen = 'vip' + i;
+    b.onclick = () => setGen('vip' + i);
+    genEl.appendChild(b);
+  }
+  $('#loading').remove();
+  apply();
+}
+
+function setCat(id) {
+  curCat = id;
+  if (id !== 'vip') curGen = '';
+  document.querySelectorAll('#cats button').forEach(b => b.classList.toggle('on', b.dataset.cat === id));
+  $('#genbar').classList.toggle('show', id === 'vip');
+  document.querySelectorAll('#genbar button').forEach(b => b.classList.toggle('on', (b.dataset.gen || '') === curGen));
+  apply();
+}
+function setGen(g) {
+  curGen = g;
+  document.querySelectorAll('#genbar button').forEach(b => b.classList.toggle('on', (b.dataset.gen || '') === g));
+  apply();
+}
+
+function apply() {
+  const q = $('#q').value.trim().toLowerCase();
+  const fe = $('#feng').value, fp = $('#fplay').value;
+  const cat = CATS.find(c => c.id === curCat);
+  view = games.filter(g => {
+    if (q && !g.title.toLowerCase().includes(q)) return false;
+    if (fe && g.engine !== fe) return false;
+    if (fp === 'local' && !g.local) return false;
+    if (fp === 'url' && !g.url) return false;
+    if (cat && cat.match) {
+      if (!cat.match(g.source)) return false;
+      if (curCat === 'vip' && curGen && g.source !== curGen) return false;
+    }
+    return true;
+  });
+  view.sort((a, b) => (a[sortK] || '').localeCompare(b[sortK] || '', 'zh') * sortD);
+  page = 0;
+  render();
+}
+
+function playUrl(g) {
+  let u = 'player/index.html?game=' + encodeURIComponent(g.slug);
+  if (g.enc) u += '&encoding=' + g.enc;
+  if (g.eng) u += '&engine=' + g.eng;
+  return u;
+}
+
+function render() {
+  const total = view.length, pages = Math.max(1, Math.ceil(total / per));
+  page = Math.min(page, pages - 1);
+  const rows = view.slice(page * per, (page + 1) * per);
+  $('#tb').innerHTML = rows.map(g => {
+    let act;
+    if (g.local) act = `<button class="play" onclick="window.open('${playUrl(g)}','_blank')">▶ 运行</button>`;
+    else if (g.url) act = `<a class="dl" href="${esc(g.url)}" target="_blank">⬇ 下载</a>`;
+    else act = '<span class="na">—</span>';
+    const badge = g.local ? '<span class="badge">网页可玩</span>' : '';
+    return `<tr><td class="title" title="${esc(g.title)}">${esc(g.title)}${badge}</td>` +
+      `<td class="src">${esc(g.source)}</td><td class="eng">${g.engine}</td>` +
+      `<td>${esc(g.year || '')}</td><td>${esc(g.size || '')}</td><td>${act}</td></tr>`;
+  }).join('');
+  $('#stats').textContent = `${total} / ${games.length} 款`;
+  let p = '';
+  const win = 2;
+  const btn = (i, t, dis) => `<button ${dis ? 'disabled' : ''} onclick="go(${i})">${t}</button>`;
+  p += btn(page - 1, '‹ 上一页', page === 0);
+  for (let i = Math.max(0, page - win); i <= Math.min(pages - 1, page + win); i++)
+    p += `<button ${i === page ? 'style="background:#2b6cb0;color:#fff"' : ''} onclick="go(${i})">${i + 1}</button>`;
+  p += btn(page + 1, '下一页 ›', page >= pages - 1);
+  p += `<span style="color:#8b93a0;font-size:13px">第 ${page + 1} / ${pages} 页</span>`;
+  $('#pager').innerHTML = p;
+}
+
+function go(i) { page = i; render(); window.scrollTo(0, 0); }
+$('#q').addEventListener('input', apply);
+$('#feng').addEventListener('change', apply);
+$('#fplay').addEventListener('change', apply);
+document.querySelectorAll('th[data-k]').forEach(th => th.addEventListener('click', () => {
+  const k = th.dataset.k;
+  if (sortK === k) sortD *= -1; else { sortK = k; sortD = 1; }
+  view.sort((a, b) => (a[sortK] || '').localeCompare(b[sortK] || '', 'zh') * sortD);
+  render();
+}));
+boot().catch(e => { $('#loading').textContent = '加载失败: ' + e; });
+</script>
+</body>
+</html>

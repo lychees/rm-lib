@@ -1,0 +1,7 @@
+@> Play SE: 'Ža‚é7', 10, 150, 50
+@> Set Move Route: This Event, Move Right
+@> Wait: 0.0 seconds
+@> Set Event Location: This Event, (004,005)
+@> Set Move Route: This Event, Move Left
+@> Wait: 0.0 seconds
+@> Set Event Location: This Event, (003,005)

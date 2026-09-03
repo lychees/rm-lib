@@ -1,0 +1,67 @@
+・セールやってる場所
+RPG Maker 2000
+https://www.bundlestars.com/en/game/rpg-maker-2000
+RPG Maker 2003
+https://www.bundlestars.com/en/game/rpg-maker-2003
+RPG Maker XP
+https://www.bundlestars.com/en/game/rpg-maker-xp
+RPG Maker VX Ace
+https://www.bundlestars.com/en/game/rpg-maker-vx-ace
+RPG Maker MV
+https://www.bundlestars.com/en/game/rpg-maker-mv
+
+・Steam版2kの日本語の扱いについて
+  - RPT_RT.INIのゲームタイトル部分(ksg中でも言及)
+    RPG_RT.EXE実行時のゲームタイトルには日本語で反映される
+    エディター上では文字化け表示になる
+
+  - 「文章の表示」イベント
+    バイナリエディタで見ると
+    入力した日本語文字列はShift_JISで格納されてはいる
+    しかしSteam版2kのエディターもRPG_RT.exeも
+    文字コードにWindows-1252を使っているらしい
+    そんなわけで日本語表示は不可能だと思う
+
+  - 素材(.pngとか.wavとか)のファイル名
+    エディター上では文字化けしているが
+    実行すると問題なく使えている
+
+・RTPについて
+Steam版2kをインストールすると
+C:\Program Files (x86)\Steam\SteamApps\common\RPG Maker 2000\RTP
+に英語版RTPが入る
+でも普通の日本語版ユーザーは英語版RTPなんて持ってない
+しかもSteam版2kのRPT_RT.EXEは日本語版RTPを参照しない
+→使う素材は全部インポート(or 直接フォルダにコピペ)する必要がある
+
+Tkool Deep Inspectorは「英語版RTPは探さない、日本語RTPだけ探す」な挙動の模様
+このツールにプロジェクトを投げて
+report.txt中の「参照できなかった素材」欄に英語RTPっぽいファイル名があれば
+英語版RTPに依存していると分かる
+→英語版RTPに依存しないようにインポートとか修正とか(このksg製作でも頼りになりました)
+
+・RPGツクールローダーとの相性
+  - ver1.25
+    D&Dすると「コピーが完了しました」とはなるものの、
+    ゲーム一覧にてアイコン部分に赤背景白のバツ印が付く
+    「ゲーム開始」ボタンを押しても
+        ゲームの実行に必要なランタイムがインポートされていません。
+        「設定」からランタイムをインポートしてください。
+    なエラーダイアログが出てきて起動できず
+    「テキストファイル有り」ボタンからテイストビューアーを開くことは可能
+
+  - ver2.00β
+    D&Dした段階で
+        このファイルにはRPGツクール用のゲームファイルが含まれていません。
+        このファイルのコピーはスキップされます
+    なエラーダイアログが表示されてコピーされない
+    RPGフォルダー以下に手動でコピーしてもゲーム一覧に表示されない
+
+以上は、フォルダーをD&DしてもZipのままD&Dしても同じだった
+
+・参考URL
+First official English RM2k3 version is out! | Cherry Tree
+http://cherrytree.at/cms/lang/en/official-english-rm2k3-version-out/
+2k3での更新内容の紹介
+* Picture commands also work while a message is displayed.
+この部分は2kでもそうだったので、他の部分もSteam版では変わっているかもしれない
