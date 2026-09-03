@@ -168,7 +168,7 @@ function render() {
     else act = '<span class="na">—</span>';
     const badge = g.local ? '<span class="badge">网页可玩</span>' : '';
     return `<tr><td class="title" title="${esc(g.title)}">${esc(g.title)}${badge}</td>` +
-      `<td class="src">${esc(g.source)}</td><td class="eng">${g.engine}</td>` +
+      `<td class="src">${g.page ? `<a href="${esc(g.page)}" target="_blank" style="color:#7fb3e0">${esc(g.source)}</a>` : esc(g.source)}</td><td class="eng">${g.engine}</td>` +
       `<td>${esc(g.year || '')}</td><td>${esc(g.size || '')}</td><td>${act}</td></tr>`;
   }).join('');
   $('#stats').textContent = `${total} / ${games.length} 款`;
