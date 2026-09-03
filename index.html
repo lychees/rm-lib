@@ -114,6 +114,8 @@ async function boot() {
   }
   $('#loading').remove();
   apply();
+  fixStickyTop();
+  window.addEventListener('resize', fixStickyTop);
 }
 
 function setCat(id) {
@@ -123,6 +125,7 @@ function setCat(id) {
   $('#genbar').classList.toggle('show', id === 'vip');
   document.querySelectorAll('#genbar button').forEach(b => b.classList.toggle('on', (b.dataset.gen || '') === curGen));
   apply();
+  fixStickyTop();
 }
 function setGen(g) {
   curGen = g;
@@ -181,6 +184,11 @@ function render() {
   p += btn(page + 1, '下一页 ›', page >= pages - 1);
   p += `<span style="color:#8b93a0;font-size:13px">第 ${page + 1} / ${pages} 页</span>`;
   $('#pager').innerHTML = p;
+}
+
+function fixStickyTop() {
+  const h = document.querySelector('header').offsetHeight;
+  document.querySelectorAll('th').forEach(th => th.style.top = h + 'px');
 }
 
 function go(i) { page = i; render(); window.scrollTo(0, 0); }
