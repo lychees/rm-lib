@@ -6,96 +6,141 @@
 <title>经典传送门 · RM2k/2k3 游戏库</title>
 <style>
   body { margin: 0; font-family: "Microsoft YaHei", system-ui, sans-serif; background: #14161a; color: #d8dce2; padding: 24px; }
-  h1 { font-size: 20px; }
-  h2 { font-size: 16px; color: #7fb3e0; margin: 22px 0 8px; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 18px; margin: 14px 0 18px; }
+  .fg { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .fg .lbl { font-size: 12px; color: #8b93a0; margin-right: 2px; }
+  .fg button { background: #14161a; color: #d8dce2; border: 1px solid #3a414c; border-radius: 14px; padding: 4px 12px; font-size: 12px; cursor: pointer; }
+  .fg button.on { background: #2b6cb0; border-color: #2b6cb0; color: #fff; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
   .card { background: #1d2128; border: 1px solid #2c313a; border-radius: 8px; padding: 10px 14px; }
   .card .t { font-size: 14px; font-weight: 600; }
   .card .m { font-size: 12px; color: #8b93a0; margin: 3px 0 8px; }
+  .tags { display: flex; gap: 5px; flex-wrap: wrap; margin: 6px 0; }
+  .tag { font-size: 10px; border-radius: 4px; padding: 1px 6px; background: #2c313a; color: #9ca3af; }
+  .tag.eng { background: #2b4a6b; color: #a8c8e8; }
+  .tag.src { background: #3a4a3a; color: #a8c98f; }
   .card a { color: #7fb3e0; font-size: 13px; text-decoration: none; }
   .card a:hover { text-decoration: underline; }
-  .free { color: #a8c98f; font-size: 11px; }
-  .paid { color: #d8a86a; font-size: 11px; }
+  .free { color: #a8c98f; }
+  .paid { color: #d8a86a; }
   a.back { color: #7fb3e0; font-size: 13px; }
+  #count { font-size: 12px; color: #8b93a0; margin-left: 8px; }
 </style>
 </head>
 <body>
 <a class="back" href="index.html">← 返回游戏库</a>
-<h1>经典传送门</h1>
-<p style="color:#8b93a0;font-size:13px">RMXP / VX Ace / MV / WOLF RPG Editor 经典游戏的官方/授权下载页。绿色=免费，橙色=付费。</p>
-<div id="app"></div>
+<h1>经典传送门 <span id="count"></span></h1>
+<div class="filters" id="filters"></div>
+<div class="grid" id="grid"></div>
 <script>
-const DATA = {
-  'RMXP（RPG Maker XP）': [
-    ['Exit Fate','2009','https://www.scfworks.com/files/Exit%20Fate%20v102.zip','free'],
-    ['Last Scenario','2006','https://www.scfworks.com/files/Last%20Scenario%20v122.zip','free'],
-    ['To the Moon','2011','https://store.steampowered.com/app/206440/To_the_Moon/','paid'],
-    ['The Mirror Lied','2008','https://freebirdgames.com/games/the-mirror-lied/','free'],
-    ['Quintessence: The Blighted Venom','2008','https://freebirdgames.com/','free'],
-    ['Ao Oni','2008','http://mygames888.web.fc2.com/aooni/','free'],
-    ['Middens','2012','https://rmarchiv.de/games/3936','free'],
-    ['Gingiva','2013','https://rmarchiv.de/games/3938','free'],
-    ['Master of the Wind','2011','https://rpgmaker.net/games/51/','free'],
-    ['Vacant Sky Vol.1','2009','https://rpgmaker.net/games/1046/','free'],
-  ],
-  'RMVX Ace': [
-    ['Jimmy and the Pulsating Mass','2018','https://store.steampowered.com/app/706560/Jimmy_and_the_Pulsating_Mass/','paid'],
-    ['Dreaming Mary','2014','https://rpgmaker.net/games/6232/','free'],
-    ['Pocket Mirror','2016','https://rpgmaker.net/games/5946/','free'],
-    ['Hello Charlotte EP1-3','2015–18','https://etherane.weebly.com/','free'],
-    ['Hylics','2015','https://store.steampowered.com/app/397740/Hylics/','paid'],
-    ['Lisa: The Painful','2014','https://store.steampowered.com/app/335670/LISA_The_Painful/','paid'],
-    ['Stray Cat Crossing','2015','https://rpgmaker.net/games/6154/','free'],
-    ['Okiku, Star Apprentice','2020','https://rpgmaker.net/games/5774/','free'],
-    ['Weird and Unfortunate Things Are Happening','2020','https://rpgmaker.net/games/8394/','free'],
-    ['The Endless Empty','2021','https://rpgmaker.net/games/9949/','free'],
-    ['The Witch\'s House（RMVX）','2012','http://majokko.a-creation.com/','free'],
-    ['Mogeko Castle 重制版','2014','https://vgperson.com/games/mogekocastle.htm','free'],
-  ],
-  'RM MV': [
-    ['Omori','2020','https://store.steampowered.com/app/1150690/OMORI/','paid'],
-    ['Fear & Hunger','2018','https://store.steampowered.com/app/1006510/Fear__Hunger/','paid'],
-    ['Fear & Hunger 2: Termina','2022','https://store.steampowered.com/app/1627400/Fear__Hunger_2_Termina/','paid'],
-    ['Escaped Chasm','2019','https://tuyoki.itch.io/escaped-chasm','free'],
-    ['Dweller\'s Empty Path','2020','https://tuyoki.itch.io/dwellers-empty-path','free'],
-    ['Yume Nikki: Dream Diary','2018','https://store.steampowered.com/app/774811/Yume_Nikki__Dream_Diary/','paid'],
-    ['Ib 重制版','2022','https://store.steampowered.com/app/1901370/Ib/','paid'],
-    ['The Witch\'s House 重制版','2022','https://store.steampowered.com/app/1767740/The_Witchs_House/','paid'],
-    ['DELUGE','2023','https://riggy2k3.itch.io/deluge','free'],
-    ['Look Outside','2024','https://store.steampowered.com/app/2800730/Look_Outside/','paid'],
-  ],
-  'WOLF RPG Editor': [
-    ['Mogeko Castle','2012','https://vgperson.com/games/mogekocastle.htm','free'],
-    ['Wadanohara and the Great Blue Sea','2013','https://vgperson.com/games/wadanohara.htm','free'],
-    ['The Gray Garden','2015','https://vgperson.com/games/graygarden.htm','free'],
-    ['Alice mare','2014','https://vgperson.com/games/alicemare.htm','free'],
-    ['1bitHeart','2016','https://vgperson.com/games/1bitheart.htm','free'],
-    ['LiEat','2014','https://vgperson.com/games/lieat.htm','free'],
-    ['Mad Father','2013','https://vgperson.com/games/madfather.htm','free'],
-    ['Misao','2011','https://vgperson.com/games/misao.htm','free'],
-    ['The Crooked Man','2012','https://vgperson.com/games/crookedman.htm','free'],
-    ['The Sandman','2014','https://vgperson.com/games/sandman.htm','free'],
-    ['The Boogie Man','2015','https://vgperson.com/games/boogieman.htm','free'],
-    ['The Hanged Man','2018','https://vgperson.com/games/hangedman.htm','free'],
-    ['Mermaid Swamp','2012','https://vgperson.com/games/mermaidswamp.htm','free'],
-    ['Paranoiac','2011','https://vgperson.com/games/paranoiac.htm','free'],
-  ],
-};
-const app = document.getElementById('app');
-for (const [cat, games] of Object.entries(DATA)) {
-  const h = document.createElement('h2');
-  h.textContent = cat;
-  app.appendChild(h);
-  const grid = document.createElement('div');
-  grid.className = 'grid';
-  for (const [title, year, url, kind] of games) {
+const GAMES = [
+  // [title, year, engine, source, url, kind]
+  ['Exit Fate',2009,'RMXP','SCFWorks','https://www.scfworks.com/files/Exit%20Fate%20v102.zip','free'],
+  ['Last Scenario',2006,'RMXP','SCFWorks','https://www.scfworks.com/files/Last%20Scenario%20v122.zip','free'],
+  ['To the Moon',2011,'RMXP','Steam','https://store.steampowered.com/app/206440/To_the_Moon/','paid'],
+  ['The Mirror Lied',2008,'RMXP','Freebird','https://freebirdgames.com/games/the-mirror-lied/','free'],
+  ['Quintessence: The Blighted Venom',2008,'RMXP','Freebird','https://freebirdgames.com/','free'],
+  ['Ao Oni',2008,'RMXP','作者官网','http://mygames888.web.fc2.com/aooni/','free'],
+  ['Middens',2012,'RMXP','rmarchiv.de','https://rmarchiv.de/games/3936','free'],
+  ['Gingiva',2013,'RMXP','rmarchiv.de','https://rmarchiv.de/games/3938','free'],
+  ['Master of the Wind',2011,'RMXP','RMN','https://rpgmaker.net/games/51/','free'],
+  ['Vacant Sky Vol.1',2009,'RMXP','RMN','https://rpgmaker.net/games/1046/','free'],
+  ['Jimmy and the Pulsating Mass',2018,'VX Ace','Steam','https://store.steampowered.com/app/706560/Jimmy_and_the_Pulsating_Mass/','paid'],
+  ['Dreaming Mary',2014,'VX Ace','RMN','https://rpgmaker.net/games/6232/','free'],
+  ['Pocket Mirror',2016,'VX Ace','RMN','https://rpgmaker.net/games/5946/','free'],
+  ['Hello Charlotte EP1-3',2015,'VX Ace','etherane','https://etherane.weebly.com/','free'],
+  ['Hylics',2015,'VX Ace','Steam','https://store.steampowered.com/app/397740/Hylics/','paid'],
+  ['Lisa: The Painful',2014,'VX Ace','Steam','https://store.steampowered.com/app/335670/LISA_The_Painful/','paid'],
+  ['Stray Cat Crossing',2015,'VX Ace','RMN','https://rpgmaker.net/games/6154/','free'],
+  ['Okiku, Star Apprentice',2020,'VX Ace','RMN','https://rpgmaker.net/games/5774/','free'],
+  ['Weird and Unfortunate Things Are Happening',2020,'VX Ace','RMN','https://rpgmaker.net/games/8394/','free'],
+  ['The Endless Empty',2021,'VX Ace','RMN','https://rpgmaker.net/games/9949/','free'],
+  ['The Witch\'s House',2012,'VX','Fummy 官网','http://majokko.a-creation.com/','free'],
+  ['Mogeko Castle 重制版',2014,'VX Ace','vgperson','https://vgperson.com/games/mogekocastle.htm','free'],
+  ['Omori',2020,'MV','Steam','https://store.steampowered.com/app/1150690/OMORI/','paid'],
+  ['Fear & Hunger',2018,'MV','Steam','https://store.steampowered.com/app/1006510/Fear__Hunger/','paid'],
+  ['Fear & Hunger 2: Termina',2022,'MV','Steam','https://store.steampowered.com/app/1627400/Fear__Hunger_2_Termina/','paid'],
+  ['Escaped Chasm',2019,'MV','itch.io','https://tuyoki.itch.io/escaped-chasm','free'],
+  ['Dweller\'s Empty Path',2020,'MV','itch.io','https://tuyoki.itch.io/dwellers-empty-path','free'],
+  ['Yume Nikki: Dream Diary',2018,'MV','Steam','https://store.steampowered.com/app/774811/Yume_Nikki__Dream_Diary/','paid'],
+  ['Ib 重制版',2022,'MV','Steam','https://store.steampowered.com/app/1901370/Ib/','paid'],
+  ['The Witch\'s House 重制版',2022,'MV','Steam','https://store.steampowered.com/app/1767740/The_Witchs_House/','paid'],
+  ['DELUGE',2023,'MZ','itch.io','https://riggy2k3.itch.io/deluge','free'],
+  ['Look Outside',2024,'MV','Steam','https://store.steampowered.com/app/2800730/Look_Outside/','paid'],
+  ['Mogeko Castle',2012,'WOLF','vgperson','https://vgperson.com/games/mogekocastle.htm','free'],
+  ['Wadanohara and the Great Blue Sea',2013,'WOLF','vgperson','https://vgperson.com/games/wadanohara.htm','free'],
+  ['The Gray Garden',2015,'WOLF','vgperson','https://vgperson.com/games/graygarden.htm','free'],
+  ['Alice mare',2014,'WOLF','vgperson','https://vgperson.com/games/alicemare.htm','free'],
+  ['1bitHeart',2016,'WOLF','vgperson','https://vgperson.com/games/1bitheart.htm','free'],
+  ['LiEat',2014,'WOLF','vgperson','https://vgperson.com/games/lieat.htm','free'],
+  ['Mad Father',2013,'WOLF','vgperson','https://vgperson.com/games/madfather.htm','free'],
+  ['Misao',2011,'WOLF','vgperson','https://vgperson.com/games/misao.htm','free'],
+  ['The Crooked Man',2012,'WOLF','vgperson','https://vgperson.com/games/crookedman.htm','free'],
+  ['The Sandman',2014,'WOLF','vgperson','https://vgperson.com/games/sandman.htm','free'],
+  ['The Boogie Man',2015,'WOLF','vgperson','https://vgperson.com/games/boogieman.htm','free'],
+  ['The Hanged Man',2018,'WOLF','vgperson','https://vgperson.com/games/hangedman.htm','free'],
+  ['Mermaid Swamp',2012,'WOLF','vgperson','https://vgperson.com/games/mermaidswamp.htm','free'],
+  ['Paranoiac',2011,'WOLF','vgperson','https://vgperson.com/games/paranoiac.htm','free'],
+];
+
+const ERAS = [['全部年代',''],['2006–2010','2006-2010'],['2011–2015','2011-2015'],['2016–2020','2016-2020'],['2021+','2021+']];
+const ENGINES = ['全部引擎','RMXP','VX Ace','MV','MZ','VX','WOLF'];
+const SOURCES = ['全部来源','SCFWorks','Steam','Freebird','作者官网','rmarchiv.de','RMN','etherane','vgperson','itch.io','Fummy 官网'];
+
+let fEng = '全部引擎', fSrc = '全部来源', fEra = '';
+
+function eraOf(y) {
+  if (y <= 2010) return '2006-2010';
+  if (y <= 2015) return '2011-2015';
+  if (y <= 2020) return '2016-2020';
+  return '2021+';
+}
+
+function buildFilters() {
+  const wrap = document.getElementById('filters');
+  const groups = [
+    ['引擎', ENGINES, v => fEng = v, () => fEng],
+    ['来源', SOURCES, v => fSrc = v, () => fSrc],
+    ['年代', ERAS.map(e => e[0]), v => fEra = (v === '全部年代' ? '' : v), () => fEra],
+  ];
+  for (const [lbl, opts, set, get] of groups) {
+    const g = document.createElement('div');
+    g.className = 'fg';
+    g.innerHTML = `<span class="lbl">${lbl}</span>`;
+    for (const o of opts) {
+      const b = document.createElement('button');
+      b.textContent = o;
+      b.classList.toggle('on', get() === o);
+      b.onclick = () => { set(o); buildFilters(); render(); };
+      g.appendChild(b);
+    }
+    wrap.appendChild(g);
+  }
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  let n = 0;
+  for (const [title, year, eng, src, url, kind] of GAMES) {
+    if (fEng !== '全部引擎' && eng !== fEng) continue;
+    if (fSrc !== '全部来源' && src !== fSrc) continue;
+    if (fEra && eraOf(year) !== fEra) continue;
+    n++;
     const c = document.createElement('div');
     c.className = 'card';
-    c.innerHTML = `<div class="t">${title}</div><div class="m">${year} · <span class="${kind === 'free' ? 'free' : 'paid'}">${kind === 'free' ? '免费' : '付费'}</span></div><a href="${url}" target="_blank">前往 →</a>`;
+    c.innerHTML = `<div class="t">${title}</div>` +
+      `<div class="tags"><span class="tag eng">${eng}</span><span class="tag src">${src}</span><span class="tag">${year}</span></div>` +
+      `<div class="m"><span class="${kind === 'free' ? 'free' : 'paid'}">${kind === 'free' ? '免费' : '付费'}</span></div>` +
+      `<a href="${url}" target="_blank">前往 →</a>`;
     grid.appendChild(c);
   }
-  app.appendChild(grid);
+  document.getElementById('count').textContent = `（${n} / ${GAMES.length} 款）`;
 }
+
+buildFilters();
+render();
 </script>
 </body>
 </html>
