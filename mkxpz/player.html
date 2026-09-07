@@ -14,6 +14,11 @@
 		<script>
 			// Send a dummy message every 5 seconds to prevent coi-serviceworker.js from being killed by Firefox for taking too long to fetch large files
 			setInterval(function () { navigator.serviceWorker.controller.postMessage({ type: "heartbeat" }); }, 5000);
+			// rm-lib: service worker 首次注册后需刷新一次才会接管页面（启用 crossOriginIsolated）
+			if (navigator.serviceWorker && !navigator.serviceWorker.controller && !sessionStorage.getItem('coi-reloaded')) {
+				sessionStorage.setItem('coi-reloaded', '1');
+				location.reload();
+			}
 		</script>
 		<!--Navbar-->
 		<div id="navbar">
