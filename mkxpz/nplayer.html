@@ -29,13 +29,21 @@
         element: '#nostalgist-canvas',
       };
       if (needRtp) {
+        const rtpResp = await fetch('games/Standard.mkxpz');
+        const rtpBuf = await rtpResp.arrayBuffer();
+        opts.bios = { fileName: 'RTP.mkxpz', fileContent: rtpBuf };
         opts.beforeLaunch = async (nostalgist) => {
           const FS = nostalgist.getEmscriptenFS();
-          const resp = await fetch('games/Standard.mkxpz');
-          const buf = new Uint8Array(await resp.arrayBuffer());
-          // mkxp-z 在 system 目录找 RTP：两个候选路径都写上保险
-          try { FS.writeFile('/home/web_user/retroarch/userdata/system/mkxp-z/RTP/Standard.mkxpz', buf); } catch (e) {}
-          try { FS.writeFile('/home/web_user/retroarch/userdata/system/Standard.mkxpz', buf); } catch (e) {}
+          const buf = new Uint8Array(rtpBuf);
+          const paths = [
+            '/home/web_user/retroarch/userdata/system/mkxp-z/RTP/Standard.mkxpz',
+            '/home/web_user/retroarch/userdata/system/mkxp-z/RTP/RTP.mkxpz',
+            '/home/web_user/retroarch/userdata/system/Standard.mkxpz',
+            '/home/web_user/retroarch/userdata/system/RTP.mkxpz',
+          ];
+          for (const p of paths) {
+            try { FS.writeFile(p, buf); } catch (e) {}
+          }
         };
       }
       status('starting…');
