@@ -26,6 +26,10 @@ if (typeof window === 'undefined') {
         if (r.cache === "only-if-cached" && r.mode !== "same-origin") {
             return;
         }
+        // rm-lib: 大文件（.mkxpz/.wasm）直接放行，不做 COI 头包裹（避免 Response 构建失败；只有导航需要 COI 头）
+        if (/\.(mkxpz|wasm)(\?|$)/i.test(r.url)) {
+            return;
+        }
 
         const request = (coepCredentialless && r.mode === "no-cors")
             ? new Request(r, {
