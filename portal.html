@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>经典传送门 · RM2k/2k3 游戏库</title>
+<style>
+  body { margin: 0; font-family: "Microsoft YaHei", system-ui, sans-serif; background: #14161a; color: #d8dce2; padding: 24px; }
+  h1 { font-size: 20px; }
+  h2 { font-size: 16px; color: #7fb3e0; margin: 22px 0 8px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+  .card { background: #1d2128; border: 1px solid #2c313a; border-radius: 8px; padding: 10px 14px; }
+  .card .t { font-size: 14px; font-weight: 600; }
+  .card .m { font-size: 12px; color: #8b93a0; margin: 3px 0 8px; }
+  .card a { color: #7fb3e0; font-size: 13px; text-decoration: none; }
+  .card a:hover { text-decoration: underline; }
+  .free { color: #a8c98f; font-size: 11px; }
+  .paid { color: #d8a86a; font-size: 11px; }
+  a.back { color: #7fb3e0; font-size: 13px; }
+</style>
+</head>
+<body>
+<a class="back" href="index.html">← 返回游戏库</a>
+<h1>经典传送门</h1>
+<p style="color:#8b93a0;font-size:13px">RMXP / VX Ace / MV / WOLF RPG Editor 经典游戏的官方/授权下载页。绿色=免费，橙色=付费。</p>
+<div id="app"></div>
+<script>
+const DATA = {
+  'RMXP（RPG Maker XP）': [
+    ['Exit Fate','2009','https://www.scfworks.com/files/Exit%20Fate%20v102.zip','free'],
+    ['Last Scenario','2006','https://www.scfworks.com/files/Last%20Scenario%20v122.zip','free'],
+    ['To the Moon','2011','https://store.steampowered.com/app/206440/To_the_Moon/','paid'],
+    ['The Mirror Lied','2008','https://freebirdgames.com/games/the-mirror-lied/','free'],
+    ['Quintessence: The Blighted Venom','2008','https://freebirdgames.com/','free'],
+    ['Ao Oni','2008','http://mygames888.web.fc2.com/aooni/','free'],
+    ['Middens','2012','https://rmarchiv.de/games/3936','free'],
+    ['Gingiva','2013','https://rmarchiv.de/games/3938','free'],
+    ['Master of the Wind','2011','https://rpgmaker.net/games/51/','free'],
+    ['Vacant Sky Vol.1','2009','https://rpgmaker.net/games/1046/','free'],
+  ],
+  'RMVX Ace': [
+    ['Jimmy and the Pulsating Mass','2018','https://store.steampowered.com/app/706560/Jimmy_and_the_Pulsating_Mass/','paid'],
+    ['Dreaming Mary','2014','https://rpgmaker.net/games/6232/','free'],
+    ['Pocket Mirror','2016','https://rpgmaker.net/games/5946/','free'],
+    ['Hello Charlotte EP1-3','2015–18','https://etherane.weebly.com/','free'],
+    ['Hylics','2015','https://store.steampowered.com/app/397740/Hylics/','paid'],
+    ['Lisa: The Painful','2014','https://store.steampowered.com/app/335670/LISA_The_Painful/','paid'],
+    ['Stray Cat Crossing','2015','https://rpgmaker.net/games/6154/','free'],
+    ['Okiku, Star Apprentice','2020','https://rpgmaker.net/games/5774/','free'],
+    ['Weird and Unfortunate Things Are Happening','2020','https://rpgmaker.net/games/8394/','free'],
+    ['The Endless Empty','2021','https://rpgmaker.net/games/9949/','free'],
+    ['The Witch\'s House（RMVX）','2012','http://majokko.a-creation.com/','free'],
+    ['Mogeko Castle 重制版','2014','https://vgperson.com/games/mogekocastle.htm','free'],
+  ],
+  'RM MV': [
+    ['Omori','2020','https://store.steampowered.com/app/1150690/OMORI/','paid'],
+    ['Fear & Hunger','2018','https://store.steampowered.com/app/1006510/Fear__Hunger/','paid'],
+    ['Fear & Hunger 2: Termina','2022','https://store.steampowered.com/app/1627400/Fear__Hunger_2_Termina/','paid'],
+    ['Escaped Chasm','2019','https://tuyoki.itch.io/escaped-chasm','free'],
+    ['Dweller\'s Empty Path','2020','https://tuyoki.itch.io/dwellers-empty-path','free'],
+    ['Yume Nikki: Dream Diary','2018','https://store.steampowered.com/app/774811/Yume_Nikki__Dream_Diary/','paid'],
+    ['Ib 重制版','2022','https://store.steampowered.com/app/1901370/Ib/','paid'],
+    ['The Witch\'s House 重制版','2022','https://store.steampowered.com/app/1767740/The_Witchs_House/','paid'],
+    ['DELUGE','2023','https://riggy2k3.itch.io/deluge','free'],
+    ['Look Outside','2024','https://store.steampowered.com/app/2800730/Look_Outside/','paid'],
+  ],
+  'WOLF RPG Editor': [
+    ['Mogeko Castle','2012','https://vgperson.com/games/mogekocastle.htm','free'],
+    ['Wadanohara and the Great Blue Sea','2013','https://vgperson.com/games/wadanohara.htm','free'],
+    ['The Gray Garden','2015','https://vgperson.com/games/graygarden.htm','free'],
+    ['Alice mare','2014','https://vgperson.com/games/alicemare.htm','free'],
+    ['1bitHeart','2016','https://vgperson.com/games/1bitheart.htm','free'],
+    ['LiEat','2014','https://vgperson.com/games/lieat.htm','free'],
+    ['Mad Father','2013','https://vgperson.com/games/madfather.htm','free'],
+    ['Misao','2011','https://vgperson.com/games/misao.htm','free'],
+    ['The Crooked Man','2012','https://vgperson.com/games/crookedman.htm','free'],
+    ['The Sandman','2014','https://vgperson.com/games/sandman.htm','free'],
+    ['The Boogie Man','2015','https://vgperson.com/games/boogieman.htm','free'],
+    ['The Hanged Man','2018','https://vgperson.com/games/hangedman.htm','free'],
+    ['Mermaid Swamp','2012','https://vgperson.com/games/mermaidswamp.htm','free'],
+    ['Paranoiac','2011','https://vgperson.com/games/paranoiac.htm','free'],
+  ],
+};
+const app = document.getElementById('app');
+for (const [cat, games] of Object.entries(DATA)) {
+  const h = document.createElement('h2');
+  h.textContent = cat;
+  app.appendChild(h);
+  const grid = document.createElement('div');
+  grid.className = 'grid';
+  for (const [title, year, url, kind] of games) {
+    const c = document.createElement('div');
+    c.className = 'card';
+    c.innerHTML = `<div class="t">${title}</div><div class="m">${year} · <span class="${kind === 'free' ? 'free' : 'paid'}">${kind === 'free' ? '免费' : '付费'}</span></div><a href="${url}" target="_blank">前往 →</a>`;
+    grid.appendChild(c);
+  }
+  app.appendChild(grid);
+}
+</script>
+</body>
+</html>
