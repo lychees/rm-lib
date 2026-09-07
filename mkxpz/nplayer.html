@@ -31,7 +31,7 @@
       if (needRtp) {
         const rtpResp = await fetch('games/Standard.mkxpz');
         const rtpBuf = await rtpResp.arrayBuffer();
-        opts.bios = { fileName: 'RTP.mkxpz', fileContent: rtpBuf };
+        opts.bios = { fileName: 'RTP.mkxpz', fileContent: new Uint8Array(rtpBuf) };
         opts.beforeLaunch = async (nostalgist) => {
           const FS = nostalgist.getEmscriptenFS();
           const buf = new Uint8Array(rtpBuf);
