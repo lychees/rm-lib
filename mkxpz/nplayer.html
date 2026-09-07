@@ -13,38 +13,39 @@
 <body>
 <canvas id="nostalgist-canvas"></canvas>
 <div id="status">loading mkxp-z…</div>
-<script src="https://cdn.jsdelivr.net/npm/nostalgist@latest/dist/nostalgist.js"></script>
-<script>
-(async () => {
-  const q = new URLSearchParams(location.search);
-  const game = q.get('game') || 'knight-blade.mkxpz';
-  const needRtp = q.get('rtp') === '1';
-  const status = (t) => { document.getElementById('status').textContent = t; };
-  try {
-    status('downloading core & game…');
-    const opts = {
-      core: { name: 'mkxp-z', js: './mkxp-z_libretro.js', wasm: './mkxp-z_libretro.wasm' },
-      rom: 'games/' + game,
-      element: '#nostalgist-canvas',
-    };
-    if (needRtp) {
-      opts.beforeLaunch = async (nostalgist) => {
-        const FS = nostalgist.getEmscriptenFS();
-        const resp = await fetch('games/Standard.mkxpz');
-        const buf = new Uint8Array(await resp.arrayBuffer());
-        // mkxp-z 在 system 目录找 RTP：两个候选路径都写上保险
-        try { FS.writeFile('/home/web_user/retroarch/userdata/system/mkxp-z/RTP/Standard.mkxpz', buf); } catch (e) {}
-        try { FS.writeFile('/home/web_user/retroarch/userdata/system/Standard.mkxpz', buf); } catch (e) {}
+<script type="module">
+  import { Nostalgist } from 'https://cdn.jsdelivr.net/npm/nostalgist@latest/+esm';
+
+  (async () => {
+    const q = new URLSearchParams(location.search);
+    const game = q.get('game') || 'knight-blade.mkxpz';
+    const needRtp = q.get('rtp') === '1';
+    const status = (t) => { document.getElementById('status').textContent = t; };
+    try {
+      status('downloading core & game…');
+      const opts = {
+        core: { name: 'mkxp-z', js: './mkxp-z_libretro.js', wasm: './mkxp-z_libretro.wasm' },
+        rom: 'games/' + game,
+        element: '#nostalgist-canvas',
       };
+      if (needRtp) {
+        opts.beforeLaunch = async (nostalgist) => {
+          const FS = nostalgist.getEmscriptenFS();
+          const resp = await fetch('games/Standard.mkxpz');
+          const buf = new Uint8Array(await resp.arrayBuffer());
+          // mkxp-z 在 system 目录找 RTP：两个候选路径都写上保险
+          try { FS.writeFile('/home/web_user/retroarch/userdata/system/mkxp-z/RTP/Standard.mkxpz', buf); } catch (e) {}
+          try { FS.writeFile('/home/web_user/retroarch/userdata/system/Standard.mkxpz', buf); } catch (e) {}
+        };
+      }
+      status('starting…');
+      await Nostalgist.launch(opts);
+      status('');
+    } catch (e) {
+      status('load failed: ' + (e && e.message ? e.message : e));
+      console.error(e);
     }
-    status('starting…');
-    await Nostalgist.launch(opts);
-    status('');
-  } catch (e) {
-    status('load failed: ' + (e && e.message ? e.message : e));
-    console.error(e);
-  }
-})();
+  })();
 </script>
 </body>
 </html>
