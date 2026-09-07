@@ -13,6 +13,14 @@
 <body>
 <canvas id="nostalgist-canvas"></canvas>
 <div id="status">loading mkxp-z…</div>
+<script src="coi-serviceworker.js"></script>
+<script>
+  // COI service worker 注册后需刷新一次才会接管页面（启用 crossOriginIsolated）
+  if (navigator.serviceWorker && !navigator.serviceWorker.controller && !sessionStorage.getItem('coi-reloaded')) {
+    sessionStorage.setItem('coi-reloaded', '1');
+    location.reload();
+  }
+</script>
 <script type="module">
   import { Nostalgist } from 'https://cdn.jsdelivr.net/npm/nostalgist@latest/+esm';
 
