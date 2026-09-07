@@ -114,12 +114,16 @@
 		</div>
 		<script src="core_list.js"></script>
 		<script>
-			// rm-lib: 从 ?game=<文件名> 读取游戏并自动加载
+			// rm-lib: 从 ?game=<文件名> 读取游戏并自动加载（?rtp=1 时同时加载 RTP 系统包）
 			(function() {
-				const q = new URLSearchParams(location.search).get('game');
-				if (q) {
-					const file = q.endsWith('.mkxpz') ? q : q + '.mkxpz';
+				const q = new URLSearchParams(location.search);
+				const g = q.get('game');
+				if (g) {
+					const file = g.endsWith('.mkxpz') ? g : g + '.mkxpz';
 					window.MKXPZ_GAME = { url: 'games/' + file, path: '/retroarch/content/' + file };
+				}
+				if (q.get('rtp') === '1') {
+					window.MKXPZ_RTP = 'games/Standard.mkxpz';
 				}
 			})();
 		</script>

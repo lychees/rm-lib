@@ -362,7 +362,7 @@ async function appInitialized() {
 	icnRun.classList.add("fa-play");
 
 	if (autoStart) {
-		// rm-lib: 支持 ?game=<url> 自动加载托管游戏
+		// rm-lib: 支持 ?game=<url> 自动加载托管游戏（含 RTP 系统文件）
 		if (window.MKXPZ_GAME) {
 			try {
 				const resp = await fetch(window.MKXPZ_GAME.url);
@@ -371,6 +371,14 @@ async function appInitialized() {
 				try { FS.mkdir('/retroarch/content'); } catch (e) {}
 				FS.writeFile(window.MKXPZ_GAME.path, buf);
 				ModuleBase.arguments = ["-v", window.MKXPZ_GAME.path];
+				if (window.MKXPZ_RTP) {
+					const r2 = await fetch(window.MKXPZ_RTP);
+					if (r2.ok) {
+						const b2 = new Uint8Array(await r2.arrayBuffer());
+						try { FS.mkdir('/home/web_user/retroarch/userdata/system/mkxp-z/RTP'); } catch (e) {}
+						FS.writeFile('/home/web_user/retroarch/userdata/system/mkxp-z/RTP/Standard.mkxpz', b2);
+					}
+				}
 			} catch (err) {
 				console.error('MKXPZ_GAME load failed', err);
 			}
